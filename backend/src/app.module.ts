@@ -1,15 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
-    // 1. Khai báo ConfigModule
     ConfigModule.forRoot({
-      isGlobal: true, // Để có thể dùng ở mọi nơi mà không cần import lại
+      isGlobal: true,
     }),
-    
-    // 2. Kết nối DB bất đồng bộ (Async)
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -20,10 +18,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: true, // Lưu ý: tắt khi lên Production
+        autoLoadEntities: true,
+        synchronize: true,
       }),
     }),
+    AuthModule, 
   ],
 })
 export class AppModule {}

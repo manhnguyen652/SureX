@@ -1,0 +1,98 @@
+-- Tạo database và thiết lập charset hỗ trợ tiếng Việt có dấu và Emoji
+CREATE DATABASE IF NOT EXISTS surex_db 
+CHARACTER SET utf8mb4 
+COLLATE utf8mb4_unicode_ci;
+
+USE surex_db;
+
+-- 1. Bảng USERS: Quản lý người dùng
+CREATE TABLE users (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    fullname VARCHAR(100),
+    balance BIGINT DEFAULT 0, -- Chuyển sang BIGINT cho VNĐ
+    role ENUM('USER', 'ADMIN') DEFAULT 'USER',
+    status ENUM('ACTIVE', 'BANNED') DEFAULT 'ACTIVE',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- 2. Bảng CATEGORIES: Phân loại tài khoản (Game, Phần mềm, Mạng xã hội...)
+CREATE TABLE categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    slug VARCHAR(100) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- 3. Bảng PRODUCTS: Thông tin tài khoản được đăng bán
+CREATE TABLE products (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    seller_id BIGINT NOT NULL,
+    category_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    price BIGINT NOT NULL, -- Chuyển sang BIGINT
+    account_info TEXT NOT NULL, 
+    status ENUM('AVAILABLE', 'PENDING_BUYER', 'SOLD', 'HIDDEN') DEFAULT 'AVAILABLE',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (seller_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE RESTRICT
+) ENGINE=InnoDB;
+
+-- 4. Bảng ORDERS: Trái tim của hệ thống Escrow
+CREATE TABLE orders (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    buyer_id BIGINT NOT NULL,
+    product_id BIGINT NOT NULL,
+    amount BIGINT NOT NULL, -- Tổng tiền giao dịch bằng BIGINT
+    fee BIGINT DEFAULT 0, -- Phí sàn giữ lại bằng BIGINT
+    status ENUM('PENDING', 'HOLDING', 'COMPLETED', 'DISPUTED', 'REFUNDED') DEFAULT 'PENDING',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (buyer_id) REFERENCES users(id) ON DELETE RESTRICT,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE RESTRICT
+) ENGINE=InnoDB;
+
+-- 5. Bảng TRANSACTIONS: Lịch sử biến động số dư (Nạp, Rút, Mua, Bán)
+CREATE TABLE transactions (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    order_id BIGINT DEFAULT NULL, 
+    type ENUM('DEPOSIT', 'WITHDRAW', 'PAYMENT', 'RECEIVE', 'REFUND') NOT NULL,
+    amount BIGINT NOT NULL, -- Chuyển sang BIGINT
+    description VARCHAR(255),
+    status ENUM('PENDING', 'SUCCESS', 'FAILED') DEFAULT 'PENDING',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+-- 6. Bảng DISPUTES: Quản lý khiếu nại/tranh chấp
+CREATE TABLE disputes (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    order_id BIGINT NOT NULL,
+    complainer_id BIGINT NOT NULL, 
+    admin_id BIGINT DEFAULT NULL, 
+    reason TEXT NOT NULL,
+    proof_images JSON, 
+    status ENUM('OPEN', 'PROCESSING', 'RESOLVED_BUYER', 'RESOLVED_SELLER') DEFAULT 'OPEN',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (complainer_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+-- 7. Bảng CHAT_MESSAGES: Lưu trữ tin nhắn khi có tranh chấp
+CREATE TABLE chat_messages (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    dispute_id BIGINT NOT NULL,
+    sender_id BIGINT NOT NULL,
+    message TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (dispute_id) REFERENCES disputes(id) ON DELETE CASCADE,
+    FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB;categories
