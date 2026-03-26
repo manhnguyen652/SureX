@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { Button } from '../ui/button';
 
 export function HeroSection() {
@@ -12,8 +13,8 @@ export function HeroSection() {
         <p className="text-lg md:text-xl text-slate-600 mb-8 max-w-2xl mx-auto leading-relaxed">
           Nền tảng trung gian uy tín cho mọi giao dịch tài khoản số.
         </p>
-        <Button className="bg-[#636E72] hover:bg-[#525a5f] text-white px-8 py-3 rounded-lg font-semibold text-lg">
-          Khám phá ngay
+        <Button asChild className="bg-[#636E72] hover:bg-[#525a5f] text-white px-8 py-3 rounded-lg font-semibold text-lg">
+          <Link href="/shop">Khám phá ngay</Link>
         </Button>
       </div>
     </section>

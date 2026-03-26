@@ -16,11 +16,10 @@ export function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 px-4">
+    <div className="flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 px-4 py-6">
       <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-[#636E72] mb-2">SureX</h1>
           <h2 className="text-2xl font-semibold text-slate-800 mb-2">Đăng nhập</h2>
           <p className="text-slate-500 text-sm">Giao dịch an toàn, bảo vệ tuyệt đối</p>
         </div>

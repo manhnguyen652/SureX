@@ -1,16 +1,19 @@
 'use client';
 
+import Link from 'next/link';
 import { Search } from 'lucide-react';
 import { Button } from '../ui/button';
 
 export function Header() {
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-slate-200">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <nav className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between gap-8">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <h1 className="text-2xl font-bold text-slate-700">SureX</h1>
+            <Link href="/" className="text-2xl font-bold text-slate-700 hover:text-slate-900 transition-colors">
+              SureX
+            </Link>
           </div>
 
           {/* Search Bar */}
@@ -27,11 +30,14 @@ export function Header() {
 
           {/* Auth Buttons */}
           <div className="flex items-center gap-3">
-            <button className="px-4 py-2 text-slate-700 font-medium hover:text-slate-900 transition-colors">
+            <Link
+              href="/login"
+              className="px-4 py-2 text-slate-700 font-medium hover:text-slate-900 transition-colors"
+            >
               Đăng nhập
-            </button>
-            <Button className="bg-[#636E72] hover:bg-[#525a5f] text-white px-4 py-2 rounded-lg font-medium">
-              Đăng ký
+            </Link>
+            <Button asChild className="bg-[#636E72] hover:bg-[#525a5f] text-white px-4 py-2 rounded-lg font-medium">
+              <Link href="/signup">Đăng ký</Link>
             </Button>
           </div>
         </div>
