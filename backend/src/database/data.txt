@@ -1,0 +1,24 @@
+-- 1. Thêm dữ liệu mẫu cho bảng CATEGORIES (Danh mục)
+INSERT INTO categories (name, slug) VALUES 
+('Tài khoản Game', 'tai-khoan-game'),
+('Bản quyền Phần mềm', 'ban-quyen-phan-mem'),
+('Tài khoản Mạng xã hội', 'tai-khoan-mang-xa-hoi');
+
+-- 2. Thêm 2 Người bán (Sellers) mẫu vào bảng USERS
+-- (Lưu ý: password_hash ở đây mình để tạm chuỗi text thường cho dễ nhìn, 
+-- khi code thực tế nó sẽ là chuỗi bcrypt loằng ngoằng)
+INSERT INTO users (email, password_hash, fullname, balance, role, status) VALUES 
+('nguoiban1@gmail.com', 'hashed_pass_123', 'Trần Văn Bán', 0, 'USER', 'ACTIVE'),
+('nguoiban2@gmail.com', 'hashed_pass_456', 'Lê Thị Sale', 0, 'USER', 'ACTIVE');
+
+-- 3. Thêm 5 Sản phẩm mẫu vào bảng PRODUCTS (Sử dụng BIGINT cho giá tiền VNĐ)
+INSERT INTO products (seller_id, category_id, title, description, price, account_info, status) VALUES 
+(1, 1, 'Acc Genshin Impact VIP AR60 Full Char', 'Acc chính chủ, đầy đủ thông tin, bao back. Vũ khí 5 sao trấn phái.', 1500000, 'Tài khoản: genshin_pro | Pass: M4tKh4u! | Mail: kemtheo@gmail.com', 'AVAILABLE'),
+
+(2, 1, 'Nick Liên Minh Huyền Thoại Full Tướng', 'Rank Kim Cương 1, full tướng, 200 skin siêu phẩm.', 850000, 'Tài khoản: yasuo_god | Pass: ganktem123', 'AVAILABLE'),
+
+(1, 2, 'Tài khoản Netflix Premium 1 Năm', 'Gói Ultra HD 4K, dùng riêng 1 profile, bảo hành full time.', 350000, 'Tài khoản: netflix_surex@gmail.com | Pass: PhimHay2026 | Profile: So 1', 'AVAILABLE'),
+
+(2, 2, 'Key Windows 11 Pro Bản Quyền Vĩnh Viễn', 'Key Digital kích hoạt online chính hãng Microsoft.', 250000, 'Product Key: VK7JG-NPHTM-C97JM-9MPGT-3V66T', 'AVAILABLE'),
+
+(1, 3, 'Kênh TikTok 50k Follower Tương Tác Thật', 'Kênh chủ đề giải trí, tệp khán giả GenZ, bật sẵn kiếm tiền.', 2500000, 'Tài khoản: tiktok_giai_tri | Pass: pass1234 | 2FA: 123456', 'AVAILABLE');

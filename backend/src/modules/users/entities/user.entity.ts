@@ -24,7 +24,6 @@ export class User {
   @Column({ nullable: true })
   fullname: string;
 
-  // Sử dụng BIGINT cho tiền Việt Nam
   @Column({ type: 'bigint', default: 0 })
   balance: number; 
 
