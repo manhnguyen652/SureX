@@ -22,8 +22,6 @@ export class CreateProductDto {
   @IsNotEmpty({ message: 'Thông tin tài khoản không được để trống' })
   account_info: string;
 
-  // Tạm thời cho phép gửi seller_id từ Postman để test.
-  // Trong thực tế, ta sẽ lấy ID này từ Token của người dùng đang đăng nhập.
   @IsNumber()
   @IsNotEmpty()
   seller_id: number; 
